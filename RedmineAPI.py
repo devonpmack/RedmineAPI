@@ -47,7 +47,8 @@ class RedmineInterface(object):
         else:
             err = "Status code %s, Message %s" % (resp.status_code, resp.content.decode("utf-8"))
             logging.error("[Error] Problem uploading file to Redmine: " + err)
-            raise RedmineConnectionError("Status code %s, Message %s" % (resp.status_code, resp.content.decode("utf-8")))
+            raise RedmineUploadError("Failed to upload file to Redmine. Status code %s, Message %s" %
+                                     (resp.status_code, resp.content.decode("utf-8")))
         data = {
             "issue": {
                 "uploads": [
@@ -159,6 +160,15 @@ class RedmineConnectionError(ValueError):
         self.message = message  # without this you may get DeprecationWarning
         # allow users initialize misc. arguments as any other builtin Error
         super(RedmineConnectionError, self).__init__(message, *args)
+
+
+class RedmineUploadError(ValueError):
+    """Raised when there is a problem uploading redmine file"""
+
+    def __init__(self, message, *args):
+        self.message = message  # without this you may get DeprecationWarning
+        # allow users initialize misc. arguments as any other builtin Error
+        super(RedmineUploadError, self).__init__(message, *args)
 
 # if __name__ == '__main__':
 #     RedmineInterface('https://redmine.ca', 'test_key')
