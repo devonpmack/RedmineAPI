@@ -11,8 +11,11 @@ class RedmineInterface(object):
                  when logged in, on the right-hand pane of the default layout.
         :param wait_between_retry_attempts: How many seconds to wait between retry attempts when accessing Redmine
         """
-        print(self.__url_validator(url))
-        self.url = url
+        if self.__url_validator(url):
+            self.url=url
+        else:
+            raise RedmineConnectionError("Invalid URL")
+
         self.wait = wait_between_retry_attempts
         self.api_key = api_key
 
@@ -94,7 +97,7 @@ class RedmineInterface(object):
     def __url_validator(url):
         from urllib import parse
         qualifying = ('scheme', 'netloc')
-        token = parse.urlparse(url)
+        token = parse.urlparse(str(url))
         return all([getattr(token, qualifying_attr)
                     for qualifying_attr in qualifying])
 
@@ -156,3 +159,6 @@ class RedmineConnectionError(ValueError):
         self.message = message  # without this you may get DeprecationWarning
         # allow users initialize misc. arguments as any other builtin Error
         super(RedmineConnectionError, self).__init__(message, *args)
+
+# if __name__ == '__main__':
+#     RedmineInterface('https://redmine.ca', 'test_key')
