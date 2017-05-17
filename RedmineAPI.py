@@ -19,7 +19,7 @@ class RedmineInterface(object):
         self.wait = wait_between_retry_attempts
         self.api_key = api_key
 
-    def upload_file(self, filepath, issue_id, content_type='application/zip', file_name_once_uploaded="",
+    def upload_file(self, filepath, issue_id, content_type, file_name_once_uploaded="",
                     additional_notes="", status_change=None):
         """
         :param filepath: Path to the file you want to upload
@@ -37,8 +37,8 @@ class RedmineInterface(object):
         logging.debug("Sending POST request to %s" % filepath)
 
         if file_name_once_uploaded == "":
-            import os.path as path
-            file_name_once_uploaded = path.split(filepath)[-1]
+            import os
+            file_name_once_uploaded = os.path.split(filepath)[-1]
 
         resp = requests.post(url, headers=headers, files={file_name_once_uploaded: open(filepath, "rb")})
         import json
