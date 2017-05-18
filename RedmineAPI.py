@@ -81,20 +81,26 @@ class RedmineInterface(object):
         url = urljoin(self.url, 'issues', str(issue_id) + '.json')
         return self.__get_request_timeout(url)
 
-    def update_issue(self, issue_id, notes, status_change=None):
+    def update_issue(self, issue_id, notes=None, status_change=None, assign_to_id=None):
         """
         :param issue_id: Redmine ID of the issue you want to update
         :param notes: What you want to write in the notes
-        :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback
+        :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback\
+        :param assign_to_id: ID number of the user you want to assign the issue to
         """
         url = urljoin(self.url, 'issues', str(issue_id) + '.json')
         data = {
             "issue": {
-                "notes": notes
             }
         }
         if status_change is not None:
             data['issue']['status_id'] = status_change
+
+        if assign_to_id is not None:
+            data['issue']['assigned_to_id'] = str(assign_to_id)
+
+        if notes is not None:
+            data['issue']['notes'] = notes
 
         self.__put_request_timeout(url, data)
 
