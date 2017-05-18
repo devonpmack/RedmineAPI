@@ -77,6 +77,10 @@ class RedmineInterface(object):
         url = urljoin(self.url, project, 'issues.json')
         return self.__get_request_timeout(url)
 
+    def get_issue_data(self, issue_id):
+        url = urljoin(self.url, 'issues', str(issue_id) + '.json')
+        return self.__get_request_timeout(url)
+
     def update_issue(self, issue_id, notes, status_change=None):
         """
         :param issue_id: Redmine ID of the issue you want to update
