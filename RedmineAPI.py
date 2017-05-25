@@ -74,15 +74,15 @@ class RedmineInterface(object):
         """
         This will return a dictionary with the newest 25 open issues
         :param project: in the url of your issues page
-                 eg. http://redmine.biodiversity.agr.gc.ca/projects/cfia/issues
+                 eg. http://redmine.biodiversity.agr.gc.a/projects/cfia/issues
                                                      project is cfia^^^
         """
         self.logger.info("Getting new issues...")
-        url = urljoin(self.url, project, 'issues.json')
+        url = urljoin(self.url, 'projects/%s/issues.json' % project)
         return self.__get_request_timeout(url)
 
     def get_issue_data(self, issue_id):
-        url = urljoin(self.url, 'issues', str(issue_id) + '.json')
+        url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
         return self.__get_request_timeout(url)
 
     def update_issue(self, issue_id, notes=None, status_change=None, assign_to_id=None):
@@ -92,7 +92,7 @@ class RedmineInterface(object):
         :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback\
         :param assign_to_id: ID number of the user you want to assign the issue to
         """
-        url = urljoin(self.url, 'issues', str(issue_id) + '.json')
+        url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
         data = {
             "issue": {
             }
@@ -122,7 +122,7 @@ class RedmineInterface(object):
 
         headers = {'X-Redmine-API-Key': self.api_key}
 
-        self.logger.info("Sending GET request to %s" % self.url)
+        self.logger.info("Sending GET request to %s" % url)
         resp = requests.get(url, headers=headers)
         tries = 0
         while resp.status_code != 200 and tries < 10:
