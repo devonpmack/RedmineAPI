@@ -68,7 +68,7 @@ class RedmineInterface(object):
         if status_change is not None:
             data['issue']['status_id'] = status_change
 
-        self.__put_request_timeout(url, data)
+        self.__put_request_timeout(urljoin(self.url, '/issues/%s.json' % str(issue_id)), data)
 
     def get_new_issues(self, project='cfia'):
         """
@@ -121,13 +121,13 @@ class RedmineInterface(object):
         import time
 
         headers = {'X-Redmine-API-Key': self.api_key}
-
         self.logger.info("Sending GET request to %s" % url)
         resp = requests.get(url, headers=headers)
         tries = 0
         while resp.status_code != 200 and tries < 10:
             if resp.status_code == 401:  # Unauthorized
                 self.logger.info("Invalid Redmine api key!")
+                print(resp.content.decode('utf-8'))
                 raise RedmineConnectionError("Invalid Redmine api key")
 
             self.logger.warning("GET request returned status code %d, with message %s. Waiting %ds to retry."
