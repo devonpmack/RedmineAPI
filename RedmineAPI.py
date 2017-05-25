@@ -11,6 +11,10 @@ class RedmineInterface(object):
                  when logged in, on the right-hand pane of the default layout.
         :param wait_between_retry_attempts: How many seconds to wait between retry attempts when accessing Redmine
         """
+
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel('DEBUG')
+
         if self.__url_validator(url):
             self.url=url
         else:
@@ -33,8 +37,8 @@ class RedmineInterface(object):
 
         url = urljoin(self.url, 'uploads.json')
         headers = {'X-Redmine-API-Key': self.api_key, 'content-type': 'application/octet-stream'}
-        logging.debug("Uploading %s to redmine..." % filepath)
-        logging.debug("Sending POST request to %s" % filepath)
+        self.logger.info("Uploading %s to redmine..." % filepath)
+        self.logger.info("Sending POST request to %s" % filepath)
 
         if file_name_once_uploaded == "":
             import os
@@ -46,7 +50,7 @@ class RedmineInterface(object):
             token = json.loads(resp.content.decode("utf-8"))['upload']['token']
         else:
             err = "Status code %s, Message %s" % (resp.status_code, resp.content.decode("utf-8"))
-            logging.error("[Error] Problem uploading file to Redmine: " + err)
+            self.logger.error("[Error] Problem uploading file to Redmine: " + err)
             raise RedmineUploadError("Failed to upload file to Redmine. Status code %s, Message %s" %
                                      (resp.status_code, resp.content.decode("utf-8")))
         data = {
@@ -73,7 +77,7 @@ class RedmineInterface(object):
                  eg. http://redmine.biodiversity.agr.gc.ca/projects/cfia/issues
                                                      project is cfia^^^
         """
-
+        self.logger.info("Getting new issues...")
         url = urljoin(self.url, project, 'issues.json')
         return self.__get_request_timeout(url)
 
@@ -118,18 +122,18 @@ class RedmineInterface(object):
 
         headers = {'X-Redmine-API-Key': self.api_key}
 
-        logging.debug("Sending GET request to %s" % self.url)
+        self.logger.info("Sending GET request to %s" % self.url)
         resp = requests.get(url, headers=headers)
         tries = 0
         while resp.status_code != 200 and tries < 10:
             if resp.status_code == 401:  # Unauthorized
-                logging.debug("Invalid Redmine api key!")
+                self.logger.info("Invalid Redmine api key!")
                 raise RedmineConnectionError("Invalid Redmine api key")
 
-            logging.debug("GET request returned status code %d, with message %s. Waiting %ds to retry."
-                              % (resp.status_code, resp.content.decode('utf-8'), self.wait))
+            self.logger.warning("GET request returned status code %d, with message %s. Waiting %ds to retry."
+                          % (resp.status_code, resp.content.decode('utf-8'), self.wait))
             time.sleep(self.wait)
-            logging.debug("Retrying...")
+            self.logger.info("Retrying...")
             resp = requests.get(url, headers=headers)
             tries += 1
         if tries >= 10:
@@ -143,16 +147,16 @@ class RedmineInterface(object):
 
         self.wait = 60
 
-        logging.debug("Sending PUT request to %s" % url)
+        self.logger.info("Sending PUT request to %s" % url)
 
         headers = {'X-Redmine-API-Key': self.api_key, 'content-type': 'application/json'}
         resp = requests.put(url, headers=headers, json=data)
         tries = 0
         while (resp.status_code != 200 and resp.status_code != 201) and tries < 10:  # OK / Created
-            logging.warning("PUT request returned status code %d, with message %s. Waiting %ds to retry."
+            self.logger.warning("PUT request returned status code %d, with message %s. Waiting %ds to retry."
                               % (resp.status_code, resp.content.decode('utf-8'), self.wait))
             time.sleep(self.wait)
-            logging.warning("Retrying...")
+            self.logger.warning("Retrying...")
             resp = requests.put(url, headers=headers, json=data)
             tries += 1
 
