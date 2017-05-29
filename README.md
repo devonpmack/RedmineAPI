@@ -38,7 +38,7 @@ issue_1_subject = issues['issues'][0]['subject']
 
 ### get_issue_data
 Get data for a specific issue
-- project: in the url of your issues page eg. http://redmine.biodiversity.agr.gc.a/projects/*cfia*/issues has the project cfia
+- issue_id: Redmine issue id
 - returns dictionary of the issue
 
 #### Example
@@ -49,7 +49,7 @@ issue_1_descr = issue['issue']['description']
 ```
 
 ### update_issue
-Update a redmine issue
+Update a Redmine issue
 - issue_id: Redmine ID of the issue you want to update
 - notes: What you want to write in the notes
 - status_change: Number from 1 - 4, 2 is in progress 4 is feedback
