@@ -1,7 +1,7 @@
 # RedmineAPI
 Python class for easy Redmine access
 
-### Creating a new redmine interface instance
+## Creating a new redmine interface instance
 Use this to access redmine
 - url: Redmine url in this format - http://redmine.biodiversity.agr.gc.ca/
 - api_key: Your redmine api key - You can find your API key on your account page ( /my/account ) when logged in, on the right-hand pane of the default layout.
@@ -10,7 +10,7 @@ Use this to access redmine
 redmine = RedmineInterface('http://redmine.biodiversity.agr.gc.ca/', 'foo')
 ```
 
-### upload_file
+## upload_file
 For attaching a file to a Redmine issue
 - filepath: Path to the file you want to upload
 - issue_id: ID of the Redmine issue you want to upload the file to
@@ -24,7 +24,7 @@ For attaching a file to a Redmine issue
 redmine = RedmineInterface(...)
 redmine.upload_file("/home/file.zip", 123, "application/zip")
 ```
-### get_new_issues
+## get_new_issues
 Get top 25 newest open issues
 - project: in the url of your issues page eg. http://redmine.biodiversity.agr.gc.a/projects/*cfia*/issues has the project cfia
 - returns dictionary of issues
@@ -36,7 +36,7 @@ issues = get_new_issues('cfia')
 issue_1_subject = issues['issues'][0]['subject']
 ```
 
-### get_issue_data
+## get_issue_data
 Get data for a specific issue
 - issue_id: Redmine issue id
 - returns dictionary of the issue
@@ -48,7 +48,7 @@ issue = get_issue_data(1234)
 issue_1_descr = issue['issue']['description']
 ```
 
-### update_issue
+## update_issue
 Update a Redmine issue
 - issue_id: Redmine ID of the issue you want to update
 - notes: What you want to write in the notes
@@ -61,7 +61,7 @@ redmine = RedmineInterface(...)
 redmine.update_issue(1234, notes="Hello world!", status_change=4)
 ```
 
-### Assigning an issue back to the author
+## Assigning an issue back to the author
 ```python
 redmine = RedmineInterface(...)
 issue_info = redmine.get_issue_data(issue_id)
