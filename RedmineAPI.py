@@ -16,7 +16,7 @@ class RedmineInterface(object):
         self.logger.setLevel('DEBUG')
 
         if self.__url_validator(url):
-            self.url=url
+            self.url = url
         else:
             raise RedmineConnectionError("Invalid URL")
 
@@ -76,12 +76,17 @@ class RedmineInterface(object):
         :param project: in the url of your issues page
                  eg. http://redmine.biodiversity.agr.gc.a/projects/cfia/issues
                                                      project is cfia^^^
+        :return dictionary of issues
         """
         self.logger.info("Getting new issues...")
         url = urljoin(self.url, 'projects/%s/issues.json' % project)
         return self.__get_request_timeout(url)
 
     def get_issue_data(self, issue_id):
+        """
+        :param issue_id: redmine issue id
+        :return dictionary of the issue
+        """
         url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
         return self.__get_request_timeout(url)
 
@@ -89,7 +94,7 @@ class RedmineInterface(object):
         """
         :param issue_id: Redmine ID of the issue you want to update
         :param notes: What you want to write in the notes
-        :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback\
+        :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback
         :param assign_to_id: ID number of the user you want to assign the issue to
         """
         url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
@@ -186,3 +191,4 @@ class RedmineUploadError(ValueError):
 
 # if __name__ == '__main__':
 #     RedmineInterface('https://redmine.ca', 'test_key')
+
