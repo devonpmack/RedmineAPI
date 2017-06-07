@@ -61,9 +61,14 @@ redmine = RedmineInterface(...)
 redmine.update_issue(1234, notes="Hello world!", status_change=4)
 ```
 
-## Assigning an issue back to the author
+## assign_to_author
+Update a Redmine issue
+- issue_id: Redmine ID of the issue you want to update
+- notes: What you want to write in the notes
+- status_change: Number from 1 - 4, 2 is in progress 4 is feedback
+
+#### Example
 ```python
 redmine = RedmineInterface(...)
-issue_info = redmine.get_issue_data(issue_id)
-redmine.update_issue(issue_id, assign_to_id=issue_info['issue']['author']['id'])
+redmine.assign_to_author(1234, notes="Hello world!", status_change=4)
 ```

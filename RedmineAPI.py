@@ -113,6 +113,15 @@ class RedmineInterface(object):
 
         self.__put_request_timeout(url, data)
 
+    def assign_to_author(self, issue_id, notes=None, status_change=None):
+        """
+                :param issue_id: Redmine ID of the issue you want to update
+                :param notes: What you want to write in the notes
+                :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback
+                """
+        self.update_issue(issue_id, notes=notes, status_change=status_change,
+                          assign_to_id=self.get_issue_data(issue_id)['issue']['author']['id'])
+
     @staticmethod
     def __url_validator(url):
         from urllib import parse
@@ -188,7 +197,4 @@ class RedmineUploadError(ValueError):
         self.message = message  # without this you may get DeprecationWarning
         # allow users initialize misc. arguments as any other builtin Error
         super(RedmineUploadError, self).__init__(message, *args)
-
-# if __name__ == '__main__':
-#     RedmineInterface('https://redmine.ca', 'test_key')
 
