@@ -17,7 +17,7 @@ For attaching a file to a Redmine issue
 - content_type: The content type of the file you are uploading, please check on [this webpage](http://www.freeformatter.com/mime-types-list.html)
 - file_name_once_uploaded: The filename once it's on Redmine
 - additional_notes: Notes to upload the file with
-- status_change: Number from 1 - 4, 2 is in progress 4 is feedback
+- status_change: Number from 2 - 5, 2 is in progress, 3 is resolved, 4 is feedback, 5 is closed.
         
 #### Example
 ```python
@@ -25,8 +25,9 @@ redmine = RedmineInterface(...)
 redmine.upload_file("/home/file.zip", 123, "application/zip")
 ```
 ## get_new_issues
-Get top 25 newest open issues
+Get x newest open issues
 - project: in the url of your issues page eg. http://redmine.biodiversity.agr.gc.a/projects/*cfia*/issues has the project cfia
+- num_issues: how many issues to retrieve (default 25)
 - returns dictionary of issues
 
 #### Example
@@ -39,7 +40,7 @@ issue_1_subject = issues['issues'][0]['subject']
 ## get_issue_data
 Get data for a specific issue
 - issue_id: Redmine issue id
-- returns dictionary of the issue
+- returns dictionary of the issue.
 
 #### Example
 ```python
@@ -52,7 +53,7 @@ issue_1_descr = issue['issue']['description']
 Update a Redmine issue
 - issue_id: Redmine ID of the issue you want to update
 - notes: What you want to write in the notes
-- status_change: Number from 1 - 4, 2 is in progress 4 is feedback
+- status_change: Number from 2 - 5, 2 is in progress, 3 is resolved, 4 is feedback, 5 is closed.
 - assign_to_id: ID number of the user you want to assign the issue to
 
 #### Example
@@ -65,7 +66,7 @@ redmine.update_issue(1234, notes="Hello world!", status_change=4)
 Update a Redmine issue
 - issue_id: Redmine ID of the issue you want to update
 - notes: What you want to write in the notes
-- status_change: Number from 1 - 4, 2 is in progress 4 is feedback
+- status_change: Number from 2 - 5, 2 is in progress, 3 is resolved, 4 is feedback, 5 is closed.
 
 #### Example
 ```python

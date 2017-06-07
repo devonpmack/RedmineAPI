@@ -70,16 +70,17 @@ class RedmineInterface(object):
 
         self.__put_request_timeout(urljoin(self.url, '/issues/%s.json' % str(issue_id)), data)
 
-    def get_new_issues(self, project='cfia'):
+    def get_new_issues(self, project='cfia', num_issues=25):
         """
         This will return a dictionary with the newest 25 open issues
+        :param num_issues: Number of issues to get from redmine
         :param project: in the url of your issues page
                  eg. http://redmine.biodiversity.agr.gc.a/projects/cfia/issues
                                                      project is cfia^^^
         :return dictionary of issues
         """
         self.logger.info("Getting new issues...")
-        url = urljoin(self.url, 'projects/%s/issues.json' % project)
+        url = urljoin(self.url, 'projects/%s/issues.json?limit=%d' % (project, num_issues))
         return self.__get_request_timeout(url)
 
     def get_issue_data(self, issue_id):
@@ -144,8 +145,8 @@ class RedmineInterface(object):
                 print(resp.content.decode('utf-8'))
                 raise RedmineConnectionError("Invalid Redmine api key")
 
-            self.logger.warning("GET request returned status code %d, with message %s. Waiting %ds to retry."
-                          % (resp.status_code, resp.content.decode('utf-8'), self.wait))
+            self.logger.warning("GET request returned status code %d, with message %s. Waiting %ds to retry." %
+                                (resp.status_code, resp.content.decode('utf-8'), self.wait))
             time.sleep(self.wait)
             self.logger.info("Retrying...")
             resp = requests.get(url, headers=headers)
@@ -167,8 +168,8 @@ class RedmineInterface(object):
         resp = requests.put(url, headers=headers, json=data)
         tries = 0
         while (resp.status_code != 200 and resp.status_code != 201) and tries < 10:  # OK / Created
-            self.logger.warning("PUT request returned status code %d, with message %s. Waiting %ds to retry."
-                              % (resp.status_code, resp.content.decode('utf-8'), self.wait))
+            self.logger.warning("PUT request returned status code %d, with message %s. Waiting %ds to retry." %
+                                (resp.status_code, resp.content.decode('utf-8'), self.wait))
             time.sleep(self.wait)
             self.logger.warning("Retrying...")
             resp = requests.put(url, headers=headers, json=data)
