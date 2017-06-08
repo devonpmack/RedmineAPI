@@ -98,7 +98,7 @@ class RedmineInterface(object):
         :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback
         :param assign_to_id: ID number of the user you want to assign the issue to
         """
-        url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
+        url = urljoin(self.url, 'issues/%s.json?include=attachments' % str(issue_id))
         data = {
             "issue": {
             }
@@ -113,6 +113,39 @@ class RedmineInterface(object):
             data['issue']['notes'] = notes
 
         self.__put_request_timeout(url, data)
+
+    def download_file(self, content_url, decode=True):
+        """
+        :param content_url: url of the file to download 
+        :param decode: whether or not to decode the file as utf-8 (keep this on for text files)
+        :return: string if decoded, else a bytes type.
+        """
+        import time
+
+        headers = {'X-Redmine-API-Key': self.api_key}
+        self.logger.info("Sending GET request to %s" % content_url)
+        resp = requests.get(content_url, headers=headers)
+        tries = 0
+        while resp.status_code != 200 and tries < 10:
+            if resp.status_code == 401:  # Unauthorized
+                self.logger.info("Invalid Redmine api key!")
+                print(resp.content.decode('utf-8'))
+                raise RedmineConnectionError("Invalid Redmine api key")
+
+            self.logger.warning("GET request returned status code %d, with message %s. Waiting %ds to retry." %
+                                (resp.status_code, resp.content.decode('utf-8'), self.wait))
+            time.sleep(self.wait)
+            self.logger.info("Retrying...")
+            resp = requests.get(content_url, headers=headers)
+            tries += 1
+        if tries >= 10:
+            raise RedmineConnectionError("Could not connect to redmine servers. Status code %d, message:\n%s"
+                                         % (resp.status_code, resp.content.decode('utf-8')))
+        else:
+            if decode:
+                return resp.content.decode('utf-8')
+            else:
+                return resp.content
 
     def assign_to_author(self, issue_id, notes=None, status_change=None):
         """
