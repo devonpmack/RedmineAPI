@@ -88,7 +88,7 @@ class RedmineInterface(object):
         :param issue_id: redmine issue id
         :return dictionary of the issue
         """
-        url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
+        url = urljoin(self.url, 'issues/%s.json?include=attachments' % str(issue_id))
         return self.__get_request_timeout(url)
 
     def update_issue(self, issue_id, notes=None, status_change=None, assign_to_id=None):
@@ -98,7 +98,7 @@ class RedmineInterface(object):
         :param status_change: Number from 1 - 4, 2 is in progress 4 is feedback
         :param assign_to_id: ID number of the user you want to assign the issue to
         """
-        url = urljoin(self.url, 'issues/%s.json?include=attachments' % str(issue_id))
+        url = urljoin(self.url, 'issues/%s.json' % str(issue_id))
         data = {
             "issue": {
             }
